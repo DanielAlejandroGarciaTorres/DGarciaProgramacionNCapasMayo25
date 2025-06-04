@@ -25,9 +25,12 @@ public class AlumnoDAOImplementation implements IAlumnoDAO {
     public Result GetAll() {
 
         Result result = new Result();
+        
         try {
-            int procesoCorrecto  = jdbcTemplate.execute("{CALL AlumnoGetAllSP(?)}", (CallableStatementCallback<Integer>) callableStatement -> {
+            int procesoCorrecto = jdbcTemplate.execute("{CALL AlumnoGetAllSP(?)}", (CallableStatementCallback<Integer>) callableStatement -> {
 
+                int idAlumnoPrevio = 0; // sirve para guardar el id previo por si existe ya un usuario en la lista
+                
                 callableStatement.registerOutParameter(1, Types.REF_CURSOR);
 
                 callableStatement.execute();
@@ -37,28 +40,61 @@ public class AlumnoDAOImplementation implements IAlumnoDAO {
                 result.objects = new ArrayList<>();
 
                 while (resultSet.next()) {
-                    AlumnoDireccion alumnoDireccion = new AlumnoDireccion();
+                    
+                    idAlumnoPrevio = resultSet.getInt("IdAlumno");
+                    
+                    if (!result.objects.isEmpty() && idAlumnoPrevio == ((AlumnoDireccion) (result.objects.get(result.objects.size()-1))).Alumno.getIdAlumno()) {
+                        /*aqui solo agrego direccion*/
+                        Direccion direccion = new Direccion();
+                        
+                        direccion.setIdDireccion(resultSet.getInt("IdDireccion"));
+                        direccion.setCalle(resultSet.getString("Calle"));
+                        direccion.setNumeroInterior(resultSet.getString("NumeroInterior"));
+                        direccion.setNumeroExterior(resultSet.getString("NumeroExterior"));
 
-                    alumnoDireccion.Alumno = new Alumno();
-                    alumnoDireccion.Alumno.setIdAlumno(resultSet.getInt("IdAlumno"));
-                    alumnoDireccion.Alumno.setNombre(resultSet.getString("NombreAlumno"));
-                    alumnoDireccion.Alumno.setApellidoPaterno(resultSet.getString("ApellidoPaterno"));
-                    alumnoDireccion.Alumno.setApellidoMaterno(resultSet.getString("ApellidoMaterno"));
-                    alumnoDireccion.Alumno.setEmail(resultSet.getString("Email"));
-                    alumnoDireccion.Alumno.Semestre = new Semestre();
-                    alumnoDireccion.Alumno.Semestre.setIdSemestre(resultSet.getInt("IdSemestre"));
-                    alumnoDireccion.Alumno.Semestre.setNombre(resultSet.getString("NombreSemestre"));
+                        direccion.Colonia = new Colonia();
+                        direccion.Colonia.setIdColonia(resultSet.getInt("IdColonia"));
 
-                    alumnoDireccion.Direccion = new Direccion();
-                    alumnoDireccion.Direccion.setIdDireccion(resultSet.getInt("IdDireccion"));
-                    alumnoDireccion.Direccion.setCalle(resultSet.getString("Calle"));
+                        direccion.Colonia.Municipio = new Municipio();
+                        direccion.Colonia.Municipio.setIdMunicipio(resultSet.getInt("IdMunicipio"));
+                        
+                        ((AlumnoDireccion) (result.objects.get(result.objects.size()-1))).Direcciones.add(direccion);
+                        
+                        
+                    } else {
+                        /*aqui agrego alumno y direccion*/
+                        AlumnoDireccion alumnoDireccion = new AlumnoDireccion();
 
-                    alumnoDireccion.Direccion.Colonia = new Colonia();
-                    alumnoDireccion.Direccion.Colonia.setIdColonia(resultSet.getInt("IdColonia"));
+                        alumnoDireccion.Alumno = new Alumno();
+                        alumnoDireccion.Alumno.setIdAlumno(resultSet.getInt("IdAlumno"));
+                        alumnoDireccion.Alumno.setNombre(resultSet.getString("NombreAlumno"));
+                        alumnoDireccion.Alumno.setApellidoPaterno(resultSet.getString("ApellidoPaterno"));
+                        alumnoDireccion.Alumno.setApellidoMaterno(resultSet.getString("ApellidoMaterno"));
+                        alumnoDireccion.Alumno.setEmail(resultSet.getString("Email"));
+                        alumnoDireccion.Alumno.Semestre = new Semestre();
+                        alumnoDireccion.Alumno.Semestre.setIdSemestre(resultSet.getInt("IdSemestre"));
+                        alumnoDireccion.Alumno.Semestre.setNombre(resultSet.getString("NombreSemestre"));
 
-                    alumnoDireccion.Direccion.Colonia.Municipio = new Municipio();
-                    alumnoDireccion.Direccion.Colonia.Municipio.setIdMunicipio(resultSet.getInt("IdMunicipio"));
-                    result.objects.add(alumnoDireccion);
+                        alumnoDireccion.Direcciones = new ArrayList<>();
+                        
+                        Direccion direccion = new Direccion();
+                        
+                        direccion.setIdDireccion(resultSet.getInt("IdDireccion"));
+                        direccion.setCalle(resultSet.getString("Calle"));
+                        direccion.setNumeroInterior(resultSet.getString("NumeroInterior"));
+                        direccion.setNumeroExterior(resultSet.getString("NumeroExterior"));
+
+                        direccion.Colonia = new Colonia();
+                        direccion.Colonia.setIdColonia(resultSet.getInt("IdColonia"));
+
+                        direccion.Colonia.Municipio = new Municipio();
+                        direccion.Colonia.Municipio.setIdMunicipio(resultSet.getInt("IdMunicipio"));
+                        
+                        alumnoDireccion.Direcciones.add(direccion);
+                        
+                        result.objects.add(alumnoDireccion);
+                    }
+
                 }
 
                 return 1; // termine satisfactoriamente
@@ -67,7 +103,7 @@ public class AlumnoDAOImplementation implements IAlumnoDAO {
             if (procesoCorrecto == 1) {
                 result.correct = true;
             }
-            
+
         } catch (Exception ex) {
             result.correct = false;
             result.errorMessage = ex.getLocalizedMessage();
