@@ -1,6 +1,8 @@
 
 package com.digis01.DGarciaProgramacionNCapasMayo25Maven.ML;
 
+import java.util.Date;
+
 public class Alumno {
     
     private int IdAlumno;
@@ -8,6 +10,7 @@ public class Alumno {
     private String ApellidoPaterno;
     private String ApellidoMaterno;
     private String Email;
+    private Date FechaNacimiento;
     public Semestre Semestre; // Propiedad de navegación.
     
     public int getIdAlumno() {
@@ -48,6 +51,22 @@ public class Alumno {
 
     public void setEmail(String Email) {
         this.Email = Email;
+    }
+
+    public Semestre getSemestre() {
+        return Semestre;
+    }
+
+    public void setSemestre(Semestre Semestre) {
+        this.Semestre = Semestre;
+    }
+
+    public Date getFechaNacimiento() {
+        return FechaNacimiento;
+    }
+
+    public void setFechaNacimiento(Date FechaNacimiento) {
+        this.FechaNacimiento = FechaNacimiento;
     }
     
     

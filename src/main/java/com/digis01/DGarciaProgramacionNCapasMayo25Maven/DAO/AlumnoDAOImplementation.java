@@ -111,4 +111,11 @@ public class AlumnoDAOImplementation implements IAlumnoDAO {
         }
         return result;
     }
+
+    @Override
+    public Result Add(AlumnoDireccion alumnoDireccion) {
+        
+        /*Escriban su ADD del SP*/
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
 }
