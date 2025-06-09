@@ -2,6 +2,7 @@
 package com.digis01.DGarciaProgramacionNCapasMayo25Maven.ML;
 
 import java.util.Date;
+import org.springframework.format.annotation.DateTimeFormat;
 
 public class Alumno {
     
@@ -10,6 +11,8 @@ public class Alumno {
     private String ApellidoPaterno;
     private String ApellidoMaterno;
     private String Email;
+    private String UserName;
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Date FechaNacimiento;
     public Semestre Semestre; // Propiedad de navegación.
     
@@ -51,6 +54,14 @@ public class Alumno {
 
     public void setEmail(String Email) {
         this.Email = Email;
+    }
+
+    public String getUserName() {
+        return UserName;
+    }
+
+    public void setUserName(String UserName) {
+        this.UserName = UserName;
     }
 
     public Semestre getSemestre() {

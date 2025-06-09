@@ -2,7 +2,7 @@
 package com.digis01.DGarciaProgramacionNCapasMayo25Maven.ML;
 
 
-class Pais {
+public class Pais {
     
     private int IdPais;
     private String Nombre;
