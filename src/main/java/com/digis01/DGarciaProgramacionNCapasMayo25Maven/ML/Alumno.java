@@ -1,13 +1,21 @@
 
 package com.digis01.DGarciaProgramacionNCapasMayo25Maven.ML;
 
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Size;
 import java.util.Date;
 import org.springframework.format.annotation.DateTimeFormat;
 
 public class Alumno {
     
     private int IdAlumno;
+    @Size(min = 3, max = 10, message = "Nombre entre 3 y 5")
+    @NotEmpty(message = "Ingresa dato :@")
     private String Nombre;
+    @Email(message = "Correo invalido")
+    @Pattern(regexp = "[a-zA-Z0-9_]+([.][a-zA-Z0-9_]+)*@[a-zA-Z0-9_]+([.][a-zA-Z0-9_]+)*[.][a-zA-Z]{2,5}", message = "correo invalido regex")
     private String ApellidoPaterno;
     private String ApellidoMaterno;
     private String Email;

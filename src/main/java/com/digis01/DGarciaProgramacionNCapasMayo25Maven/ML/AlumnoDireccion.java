@@ -4,10 +4,12 @@
  */
 package com.digis01.DGarciaProgramacionNCapasMayo25Maven.ML;
 
+import jakarta.validation.Valid;
 import java.util.List;
 
 
 public class AlumnoDireccion {
+    @Valid
     public Alumno Alumno;
     public Direccion Direccion;
     public List<Direccion> Direcciones;

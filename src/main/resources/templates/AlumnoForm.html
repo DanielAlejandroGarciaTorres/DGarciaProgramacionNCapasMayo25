@@ -25,14 +25,14 @@
                         <div class="card p-3 h-100">
                             <div class="mb-3">
                                 <label for="NombreAlumno" class="form-label fw-bold">Nombre</label>
-                                <input id="NombreAlumno" type="text" class="form-control" placeholder="Nombre" th:field="*{Alumno.Nombre}">
-
+                                <input id="NombreAlumno" type="text" class="form-control" placeholder="Nombre" th:field="*{Alumno.Nombre}" onpaste="return false">
+                                <span class="text-danger"  th:if="${#fields.hasErrors('Alumno.Nombre')}" th:errors="*{Alumno.Nombre}"></span>
                             </div>
                             <div class="row">
                                 <div class="col mb-3">
                                     <label for="ApellidoPaternoAlumno" class="form-label fw-bold">Apellido Paterno</label>
                                     <input id="ApellidoPaternoAlumno" type="text" class="form-control" placeholder="Apellido Paterno" th:field="*{Alumno.ApellidoPaterno}">
-
+                                    <span class="text-danger"  th:if="${#fields.hasErrors('Alumno.ApellidoPaterno')}" th:errors="*{Alumno.ApellidoPaterno}"></span>
                                 </div>
                                 <div class="col mb-3">
                                     <label for="ApellidoMaternoAlumno" class="form-label fw-bold">Apellido Materno</label>
@@ -108,6 +108,22 @@
                             <option value=0 selected>Selecciona un estado</option>
                         </select>
                     </div>
+                    <div class="col-md-3">
+                        <label for="ddlmunicipio" class="form-label fw-bold">Municipio</label>
+                        <select id="ddlmunicipio" class="form-select" aria-label="Default select example">
+                            <option value=0 selected>Selecciona un municipio</option>
+                        </select>
+                    </div>
+                    <div class="col-md-3">
+                        <label for="ddlcolonia" class="form-label fw-bold">Colonia</label>
+                        <select id="ddlcolonia" class="form-select" aria-label="Default select example">
+                            <option value=0 selected>Selecciona una colonia</option>
+                            <option value=1 data-cp="03500">Colonia A</option>
+                            <option value=2 data-cp="03501">Colonia B</option>
+                        </select>
+                    </div>
+                    
+                    <input type="text" id="codigoPostal"/>
 
                 </div>
 

@@ -5,9 +5,11 @@ import com.digis01.DGarciaProgramacionNCapasMayo25Maven.DAO.EstadoDAOImplementat
 import com.digis01.DGarciaProgramacionNCapasMayo25Maven.DAO.PaisDAOImplementation;
 import com.digis01.DGarciaProgramacionNCapasMayo25Maven.ML.AlumnoDireccion;
 import com.digis01.DGarciaProgramacionNCapasMayo25Maven.ML.Result;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -49,7 +51,14 @@ public class AlumnoController {
         return "AlumnoForm";
     }  
     @PostMapping("form") // este recupera los datos del formulario
-    public String Accion(@ModelAttribute AlumnoDireccion alumnoDireccion){
+    public String Accion(@Valid @ModelAttribute AlumnoDireccion alumnoDireccion,
+                            BindingResult bindingResult,
+                            Model model){
+        
+        if (bindingResult.hasErrors()) {
+            model.addAttribute("alumnoDireccion", alumnoDireccion);
+            return "AlumnoForm";
+        }
         
         Result result = alumnoDAOImplementation.Add(alumnoDireccion);
         return "algo"; // redireccionen a la vista de GetAll
