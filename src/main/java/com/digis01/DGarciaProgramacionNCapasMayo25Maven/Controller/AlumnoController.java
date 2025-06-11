@@ -20,58 +20,71 @@ import org.springframework.web.bind.annotation.ResponseBody;
 @Controller
 @RequestMapping("/alumno")
 public class AlumnoController {
-    
+
     @Autowired
     private AlumnoDAOImplementation alumnoDAOImplementation;
-    
+
     @Autowired
     private PaisDAOImplementation paisDAOImplementation;
-    
+
     @Autowired
     private EstadoDAOImplementation estadoDAOImplementation;
-    
+
     @GetMapping
-    public String Index(Model model){
-        
+    public String Index(Model model) {
+
         Result result = alumnoDAOImplementation.GetAll();
         if (result.correct) {
             model.addAttribute("alumnosDireccion", result.objects);
         }
         return "AlumnoIndex";
     }
-    
-    @GetMapping("form") // este prepara la vista de formualrio
-    public String Accion(Model model){
-        
-        Result resultPaises = paisDAOImplementation.GetAll();
-        
-//        model.addAttribute("paises", paisDAOImplementation.GetAll().objects);
-        model.addAttribute("paises", resultPaises.objects);
-        model.addAttribute("alumnoDireccion", new AlumnoDireccion());
-        return "AlumnoForm";
-    }  
+
+    @GetMapping("form/{idAlumno}") // este prepara la vista de formualrio
+    public String Accion(Model model, @PathVariable int idAlumno) {
+
+//        Result resultPaises = paisDAOImplementation.GetAll();
+
+        if (idAlumno < 1) {
+            model.addAttribute("paises", paisDAOImplementation.GetAll().objects);
+//            model.addAttribute("paises", resultPaises.objects);
+            model.addAttribute("alumnoDireccion", new AlumnoDireccion());
+            return "AlumnoForm";
+        } else { 
+            /*preparar una vista personalizada para el detalle usuario*/
+            /*
+            1. Recuperar el alumno
+            2. Recuperar las direcciones del alumno 
+            3. Desplegar una vista con información de alumno y pintar sus direcciones en una tabla
+            */
+            return "AlumnoDetail";
+        }
+
+//      
+    }
+
     @PostMapping("form") // este recupera los datos del formulario
     public String Accion(@Valid @ModelAttribute AlumnoDireccion alumnoDireccion,
-                            BindingResult bindingResult,
-                            Model model){
-        
+            BindingResult bindingResult,
+            Model model) {
+
         if (bindingResult.hasErrors()) {
             model.addAttribute("alumnoDireccion", alumnoDireccion);
             return "AlumnoForm";
         }
-        
+
         Result result = alumnoDAOImplementation.Add(alumnoDireccion);
         return "algo"; // redireccionen a la vista de GetAll
     }
-    
+
     @GetMapping("/GetEstadosByPais/{idPais}")
     @ResponseBody // retorno de dato estructurado (objeto en JSON/XML)
-    public Result GetEstadosByPais(@PathVariable("idPais") int IdPais){
+    public Result GetEstadosByPais(@PathVariable("idPais") int IdPais) {
         return estadoDAOImplementation.GetEstadosByPais(IdPais);
     }
     /*
     GET - Lectura, en vista es para preparación de datos o de la vista
     POST - Escritura, recuperar datos de una vista 
-    */
-    
+     */
+
 }

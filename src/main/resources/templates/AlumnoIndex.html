@@ -11,7 +11,7 @@
         <div class="container">
 
             </br>
-            <a th:href="@{/alumno/form}" class="btn btn-success">Agregar <i class="bi bi-person-plus-fill"></i></a>
+            <a th:href="@{/alumno/form/0}" class="btn btn-success">Agregar <i class="bi bi-person-plus-fill"></i></a>
             </br>
             </br>
 
@@ -31,7 +31,7 @@
                                 <li th:each="direccion : ${alumnoDireccion.Direcciones}" th:text="(${direccion.Calle} == null) ? 'Sin Direccion' : |${direccion.calle} ${direccion.NumeroExterior} ${direccion.NumeroInterior}|"></li>
                             </ul>
                         </td>
-                        <td class="text-center"><button class="btn  btn-warning"><i class="bi bi-pencil-square"></i></button> <button class="btn btn-danger"><i class="bi bi-trash3-fill"></i></button></td>
+                        <td class="text-center"><a class="btn  btn-warning"><i class="bi bi-pencil-square"></i></a> <button class="btn btn-danger"><i class="bi bi-trash3-fill"></i></button></td>
                     </tr>
 
                 </tbody>
