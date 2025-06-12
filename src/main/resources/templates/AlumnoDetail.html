@@ -14,10 +14,10 @@
                     <div class="card">
                         <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTNT31I-b-Jdf8bjPM-mm-V1qCpb-oudRLvtw&s" style="max-height: 250px; object-fit: contain" class="card-img-top" alt="Imagen del usuario">
                         <div class="card-body">
-                            <h3>Ramón Valdez</h3>
+                            <h3 th:text="|${alumnoDireccion.Alumno.Nombre} ${alumnoDireccion.Alumno.ApellidoPaterno}|"></h3>
                             <p class="card-text">Rorro</p>
                             <p class="card-text">rorrro@email.com</p>                            
-                            <a class="btn btn-primary col-12">Editar Información</a>
+                            <a class="btn btn-primary col-12" th:href="@{/alumno/formeditable?IdAlumno=} + ${alumnoDireccion.Alumno.IdAlumno}">Editar Información</a>
                         </div>
                     </div>
                 </div>
@@ -29,7 +29,7 @@
                             <h5 class="card-title">Direcciones Asignadas</h5>
 
 
-                            <a class="btn btn-secondary mt-2 col-12">Agregar Dirección</a>
+                            <a class="btn btn-secondary mt-2 col-12" th:href="@{/alumno/formeditable?IdAlumno=}+${alumnoDireccion.Alumno.IdAlumno}+'&IdDireccion=0'">Agregar Dirección</a>
 
                             <br/><br/>
 
@@ -41,10 +41,10 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr>
-                                        <td>La vecindad del chavo</td>
+                                    <tr th:each="direccion : ${alumnoDireccion.Direcciones}">
+                                        <td th:text="|${direccion.Calle}, ${direccion.NumeroExterior}, ${direccion.NumeroInterior}|"></td>
                                         <td>
-                                            <a class="btn btn-warning btn-sm">Editar</a>
+                                            <a class="btn btn-warning btn-sm" th:href="@{/alumno/formeditable?IdAlumno=}+${alumnoDireccion.Alumno.IdAlumno}+'&IdDireccion='+${direccion.IdDireccion}">Editar</a>
                                             <a class="btn btn-danger btn-sm">Eliminar</a>
                                         </td>
                                     </tr>

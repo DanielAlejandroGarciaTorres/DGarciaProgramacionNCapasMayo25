@@ -3,7 +3,9 @@ package com.digis01.DGarciaProgramacionNCapasMayo25Maven.Controller;
 import com.digis01.DGarciaProgramacionNCapasMayo25Maven.DAO.AlumnoDAOImplementation;
 import com.digis01.DGarciaProgramacionNCapasMayo25Maven.DAO.EstadoDAOImplementation;
 import com.digis01.DGarciaProgramacionNCapasMayo25Maven.DAO.PaisDAOImplementation;
+import com.digis01.DGarciaProgramacionNCapasMayo25Maven.ML.Alumno;
 import com.digis01.DGarciaProgramacionNCapasMayo25Maven.ML.AlumnoDireccion;
+import com.digis01.DGarciaProgramacionNCapasMayo25Maven.ML.Direccion;
 import com.digis01.DGarciaProgramacionNCapasMayo25Maven.ML.Result;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +17,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 @Controller
@@ -48,19 +51,54 @@ public class AlumnoController {
         if (idAlumno < 1) {
             model.addAttribute("paises", paisDAOImplementation.GetAll().objects);
 //            model.addAttribute("paises", resultPaises.objects);
-            model.addAttribute("alumnoDireccion", new AlumnoDireccion());
+            AlumnoDireccion alumnoDireccion = new AlumnoDireccion();
+            alumnoDireccion.Alumno = new Alumno();
+            alumnoDireccion.Direccion = new Direccion();
+            model.addAttribute("alumnoDireccion", alumnoDireccion);
             return "AlumnoForm";
         } else { 
-            /*preparar una vista personalizada para el detalle usuario*/
-            /*
-            1. Recuperar el alumno
-            2. Recuperar las direcciones del alumno 
-            3. Desplegar una vista con información de alumno y pintar sus direcciones en una tabla
-            */
+            model.addAttribute("alumnoDireccion", alumnoDAOImplementation.GetDetalleAlumno(idAlumno).object);
             return "AlumnoDetail";
         }
 
 //      
+    }
+    
+    @GetMapping("/formeditable")
+    public String AccionEditable(@RequestParam int IdAlumno, @RequestParam(required = false) Integer IdDireccion, Model model ){
+
+        if(IdDireccion == null) { // editarAlumno
+            AlumnoDireccion alumnoDireccion = new AlumnoDireccion();
+            //alumnoDireccion.Alumno = alumnoDAOImplementation.GetById(IdAlumno);
+            alumnoDireccion.Alumno = new Alumno();
+            alumnoDireccion.Alumno.setIdAlumno(IdAlumno);
+            alumnoDireccion.Alumno.setNombre("Ramón");
+            alumnoDireccion.Direccion = new Direccion();
+            alumnoDireccion.Direccion.setIdDireccion(-1);
+            model.addAttribute("alumnoDireccion", alumnoDireccion);
+        } else if (IdDireccion == 0){ // Agregar direccion
+            AlumnoDireccion alumnoDireccion = new AlumnoDireccion();
+            alumnoDireccion.Alumno = new Alumno();
+            alumnoDireccion.Alumno.setIdAlumno(IdAlumno); // identifico a quien voy a darle nueva direccion
+            alumnoDireccion.Direccion = new Direccion();
+            model.addAttribute("alumnoDireccion", alumnoDireccion);
+            model.addAttribute("paises",paisDAOImplementation.GetAll().objects);
+            // roles
+        } else { // editar direccion
+            AlumnoDireccion alumnoDireccion = new AlumnoDireccion();
+            alumnoDireccion.Alumno = new Alumno();
+            alumnoDireccion.Alumno.setIdAlumno(IdAlumno);
+            alumnoDireccion.Direccion = new Direccion(); // recuperar direccion usuario por id direccion
+            // alumnoDireccion.Direccion = direccionDAOImplementation.getDireccionById(IdDireccion);
+            alumnoDireccion.Direccion.setIdDireccion(IdDireccion);
+            alumnoDireccion.Direccion.setCalle("XXXXXXXXXX");
+            model.addAttribute("paises",paisDAOImplementation.GetAll().objects);
+//            model.addAttribute("estado", estadoDAOImplementation.GetEstadosByPais(IdPais));
+
+            model.addAttribute("alumnoDireccion", alumnoDireccion);
+        }
+    
+        return "AlumnoForm";
     }
 
     @PostMapping("form") // este recupera los datos del formulario

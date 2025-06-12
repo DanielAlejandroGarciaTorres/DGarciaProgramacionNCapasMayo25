@@ -13,7 +13,12 @@
         <div class="container">
 
             <form method="post" th:object="${alumnoDireccion}" th:action="@{/alumno/form}">
-                <div class="row">
+                
+                <input type="hidden" th:field="*{Alumno.IdAlumno}">
+                <input type="hidden" th:field="*{Direccion.IdDireccion}">
+                
+                <div class="row" th:if="*{(Alumno.IdAlumno == 0 && Direccion.IdDireccion == 0)
+                     || (Alumno.IdAlumno >0 && Direccion.IdDireccion == -1)}">
                     <div class="col-md-4 text-center d-flex flex-column align-items-center">
                         <div class="card p-3 w-100 h-100">
                             <label for="imagenFile" class="form-label fw-bold">Imagen</label>

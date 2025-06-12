@@ -143,4 +143,67 @@ public class AlumnoDAOImplementation implements IAlumnoDAO {
         
         return result;
     }
+    
+    @Override
+    public Result GetDetalleAlumno(int idAlumno) {
+        Result result = new Result();
+ 
+        try {
+ 
+            result.correct = jdbcTemplate.execute("{CALL AlumnoGetDetalle(?,?,?)}", (CallableStatementCallback<Boolean>) callableStatement -> {
+ 
+                callableStatement.setInt(1, idAlumno);
+                callableStatement.registerOutParameter(2, Types.REF_CURSOR);
+                callableStatement.registerOutParameter(3, Types.REF_CURSOR);
+ 
+                callableStatement.execute();
+ 
+                ResultSet resultSetUsuario = (ResultSet) callableStatement.getObject(2);
+                ResultSet resultSetDirecciones = (ResultSet) callableStatement.getObject(3);
+ 
+                AlumnoDireccion alumnoDireccion = new AlumnoDireccion();
+ 
+                if (resultSetUsuario.next()) {
+                    alumnoDireccion.Alumno = new Alumno();
+                    alumnoDireccion.Alumno.setIdAlumno(resultSetUsuario.getInt("IdAlumno"));
+                    alumnoDireccion.Alumno.setNombre(resultSetUsuario.getString("Nombre"));
+                    alumnoDireccion.Alumno.setApellidoPaterno(resultSetUsuario.getString("ApellidoPaterno"));
+                    alumnoDireccion.Alumno.setApellidoMaterno(resultSetUsuario.getString("ApellidoMaterno"));
+                    alumnoDireccion.Alumno.setEmail(resultSetUsuario.getString("Email"));
+                    alumnoDireccion.Alumno.Semestre = new Semestre();
+                }
+ 
+                alumnoDireccion.Direcciones = new ArrayList<>();
+ 
+                while (resultSetDirecciones.next()) {
+                    Direccion direccion = new Direccion();
+ 
+                    direccion.setIdDireccion(resultSetDirecciones.getInt("IdDireccion"));
+                    direccion.setCalle(resultSetDirecciones.getString("Calle"));
+                    direccion.setNumeroInterior(resultSetDirecciones.getString("NumeroInterior"));
+                    direccion.setNumeroExterior(resultSetDirecciones.getString("NumeroExterior"));
+ 
+                    direccion.Colonia = new Colonia();
+                    direccion.Colonia.setIdColonia(resultSetDirecciones.getInt("IdColonia"));
+ 
+                    direccion.Colonia.Municipio = new Municipio();
+                    direccion.Colonia.Municipio.setIdMunicipio(resultSetDirecciones.getInt("IdMunicipio"));
+ 
+                    alumnoDireccion.Direcciones.add(direccion);
+ 
+                }
+ 
+                result.object = alumnoDireccion;
+ 
+                return true;
+            });
+ 
+        } catch (Exception ex) {
+            result.correct = false;
+            result.errorMessage = ex.getLocalizedMessage();
+            result.ex = ex;
+        }
+ 
+        return result;
+    }
 }

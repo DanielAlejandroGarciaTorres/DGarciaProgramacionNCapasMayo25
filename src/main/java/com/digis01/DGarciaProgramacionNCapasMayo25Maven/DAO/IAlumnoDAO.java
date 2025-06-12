@@ -8,4 +8,6 @@ public interface IAlumnoDAO {
     Result GetAll();
     
     Result Add(AlumnoDireccion alumnoDireccion);
+    
+    Result GetDetalleAlumno(int idAlumno);
 }
