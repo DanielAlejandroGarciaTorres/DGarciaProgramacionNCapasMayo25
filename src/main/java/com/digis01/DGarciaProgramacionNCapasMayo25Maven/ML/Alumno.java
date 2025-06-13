@@ -14,8 +14,8 @@ public class Alumno {
     @Size(min = 3, max = 10, message = "Nombre entre 3 y 5")
     @NotEmpty(message = "Ingresa dato :@")
     private String Nombre;
-    @Email(message = "Correo invalido")
-    @Pattern(regexp = "[a-zA-Z0-9_]+([.][a-zA-Z0-9_]+)*@[a-zA-Z0-9_]+([.][a-zA-Z0-9_]+)*[.][a-zA-Z]{2,5}", message = "correo invalido regex")
+//    @Email(message = "Correo invalido")
+//    @Pattern(regexp = "[a-zA-Z0-9_]+([.][a-zA-Z0-9_]+)*@[a-zA-Z0-9_]+([.][a-zA-Z0-9_]+)*[.][a-zA-Z]{2,5}", message = "correo invalido regex")
     private String ApellidoPaterno;
     private String ApellidoMaterno;
     private String Email;
@@ -23,6 +23,7 @@ public class Alumno {
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Date FechaNacimiento;
     public Semestre Semestre; // Propiedad de navegación.
+    private String Imagen;
     
     public int getIdAlumno() {
         return IdAlumno;
@@ -86,6 +87,14 @@ public class Alumno {
 
     public void setFechaNacimiento(Date FechaNacimiento) {
         this.FechaNacimiento = FechaNacimiento;
+    }
+
+    public String getImagen() {
+        return Imagen;
+    }
+
+    public void setImagen(String Imagen) {
+        this.Imagen = Imagen;
     }
     
     

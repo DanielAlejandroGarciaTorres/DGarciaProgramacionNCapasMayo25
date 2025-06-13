@@ -12,7 +12,7 @@
     <body >
         <div class="container">
 
-            <form method="post" th:object="${alumnoDireccion}" th:action="@{/alumno/form}">
+            <form method="post" th:object="${alumnoDireccion}" th:action="@{/alumno/form}" enctype="multipart/form-data">
                 
                 <input type="hidden" th:field="*{Alumno.IdAlumno}">
                 <input type="hidden" th:field="*{Direccion.IdDireccion}">
@@ -102,15 +102,16 @@
 
                     <div class="col-md-3">
                         <label for="ddlpais" class="form-label fw-bold">Pais</label>
-                        <select id="ddlpais" class="form-select" aria-label="Default select example">
+                        <select id="ddlpais" class="form-select" aria-label="Default select example" th:field="*{Direccion.Colonia.Municipio.Estado.Pais.IdPais}">
                             <option value=0 selected>Selecciona un pais</option>
                             <option th:each="pais : ${paises}" th:value="${pais.IdPais}" th:text="${pais.Nombre}"></option>
                         </select>
                     </div>
                     <div class="col-md-3">
                         <label for="ddlestado" class="form-label fw-bold">Estado</label>
-                        <select id="ddlestado" class="form-select" aria-label="Default select example">
+                        <select id="ddlestado" class="form-select" aria-label="Default select example" th:field="*{Direccion.Colonia.Municipio.Estado.IdEstado}">
                             <option value=0 selected>Selecciona un estado</option>
+                            <option th:each="estado : ${estados}" th:value="${estado.IdEstado}" th:text="${estado.Nombre}"></option>
                         </select>
                     </div>
                     <div class="col-md-3">

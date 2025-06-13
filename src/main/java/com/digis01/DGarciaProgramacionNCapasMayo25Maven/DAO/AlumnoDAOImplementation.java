@@ -73,7 +73,8 @@ public class AlumnoDAOImplementation implements IAlumnoDAO {
                         alumnoDireccion.Alumno.Semestre = new Semestre();
                         alumnoDireccion.Alumno.Semestre.setIdSemestre(resultSet.getInt("IdSemestre"));
                         alumnoDireccion.Alumno.Semestre.setNombre(resultSet.getString("NombreSemestre"));
-
+                        alumnoDireccion.Alumno.setImagen(resultSet.getString("Imagen"));
+                        
                         alumnoDireccion.Direcciones = new ArrayList<>();
 
                         Direccion direccion = new Direccion();
@@ -117,17 +118,18 @@ public class AlumnoDAOImplementation implements IAlumnoDAO {
         Result result = new Result();
 
         try {
-            int rowAffected = jdbcTemplate.execute("{CALL AlumnoAddSP(?,?,?,?,?,?,?,?,?)}", (CallableStatementCallback<Integer>) callableStatement -> {
+            int rowAffected = jdbcTemplate.execute("{CALL AlumnoAddSP(?,?,?,?,?,?,?,?,?,?)}", (CallableStatementCallback<Integer>) callableStatement -> {
 
                 callableStatement.setString(1, alumnoDireccion.Alumno.getNombre());
                 callableStatement.setString(2, alumnoDireccion.Alumno.getApellidoPaterno());
                 callableStatement.setString(3, alumnoDireccion.Alumno.getApellidoMaterno());
                 callableStatement.setString(4, alumnoDireccion.Alumno.getEmail());
                 callableStatement.setInt(5, alumnoDireccion.Alumno.Semestre.getIdSemestre());
-                callableStatement.setString(6, alumnoDireccion.Direccion.getCalle());
-                callableStatement.setString(7, alumnoDireccion.Direccion.getNumeroInterior());
-                callableStatement.setString(8, alumnoDireccion.Direccion.getNumeroExterior());
-                callableStatement.setInt(9, alumnoDireccion.Direccion.Colonia.getIdColonia());
+                callableStatement.setString(6, alumnoDireccion.Alumno.getImagen());
+                callableStatement.setString(7, alumnoDireccion.Direccion.getCalle());
+                callableStatement.setString(8, alumnoDireccion.Direccion.getNumeroInterior());
+                callableStatement.setString(9, alumnoDireccion.Direccion.getNumeroExterior());
+                callableStatement.setInt(10, alumnoDireccion.Direccion.Colonia.getIdColonia());
 
                 return callableStatement.executeUpdate();
             });

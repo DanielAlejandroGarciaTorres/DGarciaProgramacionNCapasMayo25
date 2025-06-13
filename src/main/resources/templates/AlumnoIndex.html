@@ -17,13 +17,15 @@
 
             <table class="table  table-hover table-striped table-responsive">
                 <thead class="table-dark">
+                <th class="col-2">Imagen</th>
                 <th class="col-4">Nombre</th>
-                <th class="col-3">Contacto</th>
-                <th class="col-4">Direccion</th>
+                <th class="col-2">Contacto</th>
+                <th class="col-3">Direccion</th>
                 <th class="col-1"> Acciones</th>
                 </thead>
                 <tbody>
                     <tr th:each="alumnoDireccion : ${alumnosDireccion}">
+                        <td><img  style="width: 100px" th:src="${alumnoDireccion.Alumno.Imagen == null } ? 'https://upload.wikimedia.org/wikipedia/commons/thumb/1/12/User_icon_2.svg/2048px-User_icon_2.svg.png' :  'data:image/png;base64,'+ ${alumnoDireccion.Alumno.Imagen}"></td>
                         <td th:text="|${alumnoDireccion.Alumno.Nombre} ${alumnoDireccion.Alumno.ApellidoPaterno}|"></td>
                         <td></td>
                         <td>
