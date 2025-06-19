@@ -8,6 +8,7 @@ import com.digis01.DGarciaProgramacionNCapasMayo25Maven.ML.Alumno;
 import com.digis01.DGarciaProgramacionNCapasMayo25Maven.ML.AlumnoDireccion;
 import com.digis01.DGarciaProgramacionNCapasMayo25Maven.ML.Direccion;
 import com.digis01.DGarciaProgramacionNCapasMayo25Maven.ML.Result;
+import com.digis01.DGarciaProgramacionNCapasMayo25Maven.ML.ResultValidarDatos;
 import jakarta.validation.Valid;
 import java.io.BufferedReader;
 import java.io.File;
@@ -84,7 +85,7 @@ public class AlumnoController {
             return "AlumnoDetail";
         }
 
-//      
+//
     }
 
     @GetMapping("/formeditable")
@@ -159,7 +160,7 @@ public class AlumnoController {
 
     @PostMapping("cargamasiva")
     public String CargaMasiva(@RequestParam MultipartFile archivo) {
-        // archivodato.txt 
+        // archivodato.txt
         // si aplico split ["archivosato","txt"]
         if (archivo != null && !archivo.isEmpty()) {
             String fileExtention = archivo.getOriginalFilename().split("\\.")[1];
@@ -170,34 +171,75 @@ public class AlumnoController {
             } else { //"xlsx"
 
             }
+
+            //metodo para validar datos
+            ValidarDatos(alumnosDireccion);
+
+
         }
 
         return "";
     }
+
+
+
+
 
     public List<AlumnoDireccion> LecturaArchivoTXT(MultipartFile archivo) {
 
         List<AlumnoDireccion> alumnosDireccion = new ArrayList<>();
 
         try (InputStream inputStream = archivo.getInputStream(); BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));) {
-            
+
             bufferedReader.readLine();
             String linea = "";
-            while ((linea = bufferedReader.readLine()) != null) {                
+            while ((linea = bufferedReader.readLine()) != null) {
                 String[] datos = linea.split("\\|");
-                
+
                 AlumnoDireccion alumnoDireccion = new AlumnoDireccion();
                 alumnoDireccion.Alumno = new Alumno();
                 alumnoDireccion.Alumno.setNombre(datos[0]);
                 alumnoDireccion.Alumno.setApellidoPaterno(datos[1]);
-                
+
                 alumnosDireccion.add(alumnoDireccion);
             }
-            
+
         } catch (Exception ex) {
             alumnosDireccion = null;
         }
         return alumnosDireccion;
+    }
+
+    private List<ResultValidarDatos> ValidarDatos( List<AlumnoDireccion> alumnos){
+        
+        List<ResultValidarDatos> listaErrores = new ArrayList<>();
+        
+        int fila = 1;
+        
+        if( alumnos == null ){
+            listaErrores.add(new ResultValidarDatos(0,"Lista inexistente","Lista inexistente"));
+        }else if(alumnos.isEmpty()){
+            listaErrores.add(new ResultValidarDatos(0,"Lista vacia","Lista vacia"));
+        }else{
+            
+            for(AlumnoDireccion alumnodireccion : alumnos){
+                
+                if(alumnodireccion.Alumno.getNombre() == null || alumnodireccion.Alumno.getNombre().equals("")){
+                    listaErrores.add(new ResultValidarDatos(fila, alumnodireccion.Alumno.getNombre(), "Campo obligatorio" ));
+                }
+                if(alumnodireccion.Alumno.getApellidoMaterno() == null || alumnodireccion.Alumno.getApellidoMaterno().equals("")){
+                    listaErrores.add(new ResultValidarDatos(fila, alumnodireccion.Alumno.getNombre(), "Campo obligatorio" ));
+                }
+                    fila++;
+                    
+            }
+            
+            
+        }
+       
+        return listaErrores;
+        
+    
     }
 
     @GetMapping("/GetEstadosByPais/{idPais}")
@@ -207,7 +249,7 @@ public class AlumnoController {
     }
     /*
     GET - Lectura, en vista es para preparación de datos o de la vista
-    POST - Escritura, recuperar datos de una vista 
+    POST - Escritura, recuperar datos de una vista
      */
 
 }
