@@ -9,8 +9,16 @@ import com.digis01.DGarciaProgramacionNCapasMayo25Maven.ML.AlumnoDireccion;
 import com.digis01.DGarciaProgramacionNCapasMayo25Maven.ML.Direccion;
 import com.digis01.DGarciaProgramacionNCapasMayo25Maven.ML.Result;
 import jakarta.validation.Valid;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.Reader;
+import java.util.ArrayList;
 import java.util.Base64;
+import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -44,9 +52,18 @@ public class AlumnoController {
     public String Index(Model model) {
 
         Result result = alumnoDAOImplementation.GetAll();
+        model.addAttribute("alumnoBusqueda", new Alumno());
         if (result.correct) {
             model.addAttribute("alumnosDireccion", result.objects);
         }
+        return "AlumnoIndex";
+    }
+
+    @PostMapping
+    public String index(@ModelAttribute Alumno alumnoBusqueda, Model model) {
+
+        model.addAttribute("alumnoBusqueda", alumnoBusqueda);
+        model.addAttribute("alumnosDireccion", alumnoDAOImplementation.GetAll().objects);
         return "AlumnoIndex";
     }
 
@@ -123,7 +140,7 @@ public class AlumnoController {
                 String imgBase64 = Base64.getEncoder().encodeToString(bytes);
                 alumnoDireccion.Alumno.setImagen(imgBase64);
             }
-        } catch (Exception ex){
+        } catch (Exception ex) {
             System.out.println(ex.getLocalizedMessage());
         }
 
@@ -133,6 +150,54 @@ public class AlumnoController {
  /*Si id alumno == n y ID Direccion == 0 agrega direccion*/
         Result result = alumnoDAOImplementation.Add(alumnoDireccion);
         return "algo"; // redireccionen a la vista de GetAll
+    }
+
+    @GetMapping("cargamasiva")
+    public String CargaMasiva() {
+        return "CargaMasiva";
+    }
+
+    @PostMapping("cargamasiva")
+    public String CargaMasiva(@RequestParam MultipartFile archivo) {
+        // archivodato.txt 
+        // si aplico split ["archivosato","txt"]
+        if (archivo != null && !archivo.isEmpty()) {
+            String fileExtention = archivo.getOriginalFilename().split("\\.")[1];
+
+            List<AlumnoDireccion> alumnosDireccion = new ArrayList<>();
+            if (fileExtention.equals("txt")) {
+                alumnosDireccion = LecturaArchivoTXT(archivo);
+            } else { //"xlsx"
+
+            }
+        }
+
+        return "";
+    }
+
+    public List<AlumnoDireccion> LecturaArchivoTXT(MultipartFile archivo) {
+
+        List<AlumnoDireccion> alumnosDireccion = new ArrayList<>();
+
+        try (InputStream inputStream = archivo.getInputStream(); BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));) {
+            
+            bufferedReader.readLine();
+            String linea = "";
+            while ((linea = bufferedReader.readLine()) != null) {                
+                String[] datos = linea.split("\\|");
+                
+                AlumnoDireccion alumnoDireccion = new AlumnoDireccion();
+                alumnoDireccion.Alumno = new Alumno();
+                alumnoDireccion.Alumno.setNombre(datos[0]);
+                alumnoDireccion.Alumno.setApellidoPaterno(datos[1]);
+                
+                alumnosDireccion.add(alumnoDireccion);
+            }
+            
+        } catch (Exception ex) {
+            alumnosDireccion = null;
+        }
+        return alumnosDireccion;
     }
 
     @GetMapping("/GetEstadosByPais/{idPais}")
