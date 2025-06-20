@@ -17,10 +17,17 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Base64;
 import java.util.List;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -159,31 +166,47 @@ public class AlumnoController {
     }
 
     @PostMapping("cargamasiva")
-    public String CargaMasiva(@RequestParam MultipartFile archivo) {
+    public String CargaMasiva(@RequestParam MultipartFile archivo, Model model) throws IOException {
         // archivodato.txt
         // si aplico split ["archivosato","txt"]
         if (archivo != null && !archivo.isEmpty()) {
             String fileExtention = archivo.getOriginalFilename().split("\\.")[1];
 
+            
+            String root = System.getProperty("user.dir");
+            String path = "src/main/resources/archivos";
+            String fecha = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMddHHmmss"));
+            String absolutePath = root + "/" + path + "/" + fecha + archivo.getOriginalFilename();
+            
+            archivo.transferTo(new File(absolutePath));
+            
             List<AlumnoDireccion> alumnosDireccion = new ArrayList<>();
+            
+            
             if (fileExtention.equals("txt")) {
                 alumnosDireccion = LecturaArchivoTXT(archivo);
             } else { //"xlsx"
-
+                alumnosDireccion = LecturaArchivoExcel(archivo);
             }
 
             //metodo para validar datos
-            ValidarDatos(alumnosDireccion);
+            List<ResultValidarDatos> listaErrores = ValidarDatos(alumnosDireccion);
 
-
+            if (listaErrores.isEmpty()) { // puedo procesar el archivo 
+                // retorno a mi vista carga masiva  y aparece boton procesar
+            } else { // NO puedo procesar archivo
+                model.addAttribute("listaErrores", listaErrores);
+            }
         }
 
         return "";
     }
 
 
-
-
+    @GetMapping("/cargamasiva/procesar")
+    public String ProcesarCargaMasiva(){
+        return "";
+    }
 
     public List<AlumnoDireccion> LecturaArchivoTXT(MultipartFile archivo) {
 
@@ -210,6 +233,29 @@ public class AlumnoController {
         return alumnosDireccion;
     }
 
+    public List<AlumnoDireccion> LecturaArchivoExcel(MultipartFile archivo){
+        
+        List<AlumnoDireccion> alumnosDireccion = new ArrayList<>();
+        
+        try(XSSFWorkbook workbook = new XSSFWorkbook(archivo.getInputStream());){          
+            XSSFSheet sheet = workbook.getSheetAt(0);
+            
+            for (Row row : sheet) {
+                AlumnoDireccion alumnoDireccion = new AlumnoDireccion();
+                alumnoDireccion.Alumno = new Alumno();
+                alumnoDireccion.Alumno.setNombre(row.getCell(0) != null ? row.getCell(0).toString() : "");
+                alumnoDireccion.Alumno.setApellidoPaterno(row.getCell(1) != null ? row.getCell(1).toString() : "");
+                
+
+                alumnosDireccion.add(alumnoDireccion);
+            }
+        }catch(Exception ex){
+            System.out.println("Errore en apartura de archivo");
+        }
+        
+        return null;
+    }
+    
     private List<ResultValidarDatos> ValidarDatos( List<AlumnoDireccion> alumnos){
         
         List<ResultValidarDatos> listaErrores = new ArrayList<>();
