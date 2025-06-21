@@ -10,6 +10,7 @@ import com.digis01.DGarciaProgramacionNCapasMayo25Maven.ML.Semestre;
 import java.sql.ResultSet;
 import java.sql.Types;
 import java.util.ArrayList;
+import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.CallableStatementCallback;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -206,6 +207,19 @@ public class AlumnoDAOImplementation implements IAlumnoDAO {
             result.ex = ex;
         }
  
+        return result;
+    }
+
+    @Override
+    public Result Add(List<AlumnoDireccion> alumnosDireccion) {
+        Result result = new Result();
+        
+        for (AlumnoDireccion alumnoDireccion : alumnosDireccion) {
+            this.Add(alumnoDireccion);
+        }
+        
+        result.correct = true;
+        
         return result;
     }
 }

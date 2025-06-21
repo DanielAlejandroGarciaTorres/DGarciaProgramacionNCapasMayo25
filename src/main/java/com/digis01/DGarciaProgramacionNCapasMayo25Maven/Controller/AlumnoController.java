@@ -9,6 +9,7 @@ import com.digis01.DGarciaProgramacionNCapasMayo25Maven.ML.AlumnoDireccion;
 import com.digis01.DGarciaProgramacionNCapasMayo25Maven.ML.Direccion;
 import com.digis01.DGarciaProgramacionNCapasMayo25Maven.ML.Result;
 import com.digis01.DGarciaProgramacionNCapasMayo25Maven.ML.ResultValidarDatos;
+import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import java.io.BufferedReader;
 import java.io.File;
@@ -166,45 +167,55 @@ public class AlumnoController {
     }
 
     @PostMapping("cargamasiva")
-    public String CargaMasiva(@RequestParam MultipartFile archivo, Model model) throws IOException {
+    public String CargaMasiva(@RequestParam MultipartFile archivo, Model model, HttpSession session) throws IOException {
         // archivodato.txt
         // si aplico split ["archivosato","txt"]
         if (archivo != null && !archivo.isEmpty()) {
             String fileExtention = archivo.getOriginalFilename().split("\\.")[1];
 
-            
             String root = System.getProperty("user.dir");
             String path = "src/main/resources/archivos";
             String fecha = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMddHHmmss"));
             String absolutePath = root + "/" + path + "/" + fecha + archivo.getOriginalFilename();
-            
+
             archivo.transferTo(new File(absolutePath));
-            
+
             List<AlumnoDireccion> alumnosDireccion = new ArrayList<>();
-            
-            
+
             if (fileExtention.equals("txt")) {
                 alumnosDireccion = LecturaArchivoTXT(archivo);
             } else { //"xlsx"
-                alumnosDireccion = LecturaArchivoExcel(archivo);
+                alumnosDireccion = LecturaArchivoExcel(new File(absolutePath));
             }
 
             //metodo para validar datos
             List<ResultValidarDatos> listaErrores = ValidarDatos(alumnosDireccion);
 
-            if (listaErrores.isEmpty()) { // puedo procesar el archivo 
-                // retorno a mi vista carga masiva  y aparece boton procesar
-            } else { // NO puedo procesar archivo
+            if (listaErrores.isEmpty()) {
+                session.setAttribute("path", absolutePath);
                 model.addAttribute("listaErrores", listaErrores);
+                model.addAttribute("archivoCorrecto", true);
+            } else {
+                model.addAttribute("listaErrores", listaErrores);
+                model.addAttribute("archivoCorrecto", false);
             }
         }
 
-        return "";
+         return "CargaMasiva";
     }
 
-
     @GetMapping("/cargamasiva/procesar")
-    public String ProcesarCargaMasiva(){
+    public String ProcesarCargaMasiva(HttpSession session) {
+        
+        String ruta =  session.getAttribute("path").toString();
+        session.removeAttribute("path");
+        
+        // validar un arhchivo 
+        
+        // leer txt o excel
+        
+        // iterar e insertar los datos
+        
         return "";
     }
 
@@ -233,59 +244,56 @@ public class AlumnoController {
         return alumnosDireccion;
     }
 
-    public List<AlumnoDireccion> LecturaArchivoExcel(MultipartFile archivo){
-        
+    public List<AlumnoDireccion> LecturaArchivoExcel(File archivo) {
+
         List<AlumnoDireccion> alumnosDireccion = new ArrayList<>();
-        
-        try(XSSFWorkbook workbook = new XSSFWorkbook(archivo.getInputStream());){          
+
+        try (XSSFWorkbook workbook = new XSSFWorkbook(archivo);) {
             XSSFSheet sheet = workbook.getSheetAt(0);
-            
+
             for (Row row : sheet) {
                 AlumnoDireccion alumnoDireccion = new AlumnoDireccion();
                 alumnoDireccion.Alumno = new Alumno();
                 alumnoDireccion.Alumno.setNombre(row.getCell(0) != null ? row.getCell(0).toString() : "");
                 alumnoDireccion.Alumno.setApellidoPaterno(row.getCell(1) != null ? row.getCell(1).toString() : "");
-                
 
                 alumnosDireccion.add(alumnoDireccion);
             }
-        }catch(Exception ex){
+        } catch (Exception ex) {
             System.out.println("Errore en apartura de archivo");
         }
-        
-        return null;
+
+        return alumnosDireccion;
     }
-    
-    private List<ResultValidarDatos> ValidarDatos( List<AlumnoDireccion> alumnos){
-        
+
+    private List<ResultValidarDatos> ValidarDatos(List<AlumnoDireccion> alumnos) {
+
         List<ResultValidarDatos> listaErrores = new ArrayList<>();
-        
+
         int fila = 1;
-        
-        if( alumnos == null ){
-            listaErrores.add(new ResultValidarDatos(0,"Lista inexistente","Lista inexistente"));
-        }else if(alumnos.isEmpty()){
-            listaErrores.add(new ResultValidarDatos(0,"Lista vacia","Lista vacia"));
-        }else{
-            
-            for(AlumnoDireccion alumnodireccion : alumnos){
-                
-                if(alumnodireccion.Alumno.getNombre() == null || alumnodireccion.Alumno.getNombre().equals("")){
-                    listaErrores.add(new ResultValidarDatos(fila, alumnodireccion.Alumno.getNombre(), "Campo obligatorio" ));
+
+        if (alumnos == null) {
+            listaErrores.add(new ResultValidarDatos(0, "Lista inexistente", "Lista inexistente"));
+        } else if (alumnos.isEmpty()) {
+            listaErrores.add(new ResultValidarDatos(0, "Lista vacia", "Lista vacia"));
+        } else {
+
+            for (AlumnoDireccion alumnodireccion : alumnos) {
+
+                if (alumnodireccion.Alumno.getNombre() == null || alumnodireccion.Alumno.getNombre().equals("")) {
+                    listaErrores.add(new ResultValidarDatos(fila, alumnodireccion.Alumno.getNombre(), "Campo obligatorio"));
                 }
-                if(alumnodireccion.Alumno.getApellidoMaterno() == null || alumnodireccion.Alumno.getApellidoMaterno().equals("")){
-                    listaErrores.add(new ResultValidarDatos(fila, alumnodireccion.Alumno.getNombre(), "Campo obligatorio" ));
-                }
-                    fila++;
-                    
+//                if (alumnodireccion.Alumno.getApellidoMaterno() == null || alumnodireccion.Alumno.getApellidoMaterno().equals("")) {
+//                    listaErrores.add(new ResultValidarDatos(fila, alumnodireccion.Alumno.getApellidoMaterno(), "Campo obligatorio"));
+//                }
+                fila++;
+
             }
-            
-            
+
         }
-       
+
         return listaErrores;
-        
-    
+
     }
 
     @GetMapping("/GetEstadosByPais/{idPais}")
