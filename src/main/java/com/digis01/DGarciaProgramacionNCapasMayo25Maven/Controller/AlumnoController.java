@@ -1,6 +1,7 @@
 package com.digis01.DGarciaProgramacionNCapasMayo25Maven.Controller;
 
 import com.digis01.DGarciaProgramacionNCapasMayo25Maven.DAO.AlumnoDAOImplementation;
+import com.digis01.DGarciaProgramacionNCapasMayo25Maven.DAO.AlumnoJPADAOImplementation;
 import com.digis01.DGarciaProgramacionNCapasMayo25Maven.DAO.DireccionDAOImplementation;
 import com.digis01.DGarciaProgramacionNCapasMayo25Maven.DAO.EstadoDAOImplementation;
 import com.digis01.DGarciaProgramacionNCapasMayo25Maven.DAO.PaisDAOImplementation;
@@ -47,6 +48,9 @@ public class AlumnoController {
 
     @Autowired
     private AlumnoDAOImplementation alumnoDAOImplementation;
+    
+    @Autowired
+    private AlumnoJPADAOImplementation alumnoJPADAOImplementation;
 
     @Autowired
     private PaisDAOImplementation paisDAOImplementation;
@@ -157,7 +161,12 @@ public class AlumnoController {
  /*Si id alumno == n y ID Direccion == -1 edita usaurio*/
  /*Si id alumno == n y ID Direccion == m edita direccion*/
  /*Si id alumno == n y ID Direccion == 0 agrega direccion*/
-        Result result = alumnoDAOImplementation.Add(alumnoDireccion);
+ 
+ 
+ 
+//        Result result = alumnoDAOImplementation.Add(alumnoDireccion);
+        Result result = alumnoJPADAOImplementation.Add(alumnoDireccion);
+        
         return "algo"; // redireccionen a la vista de GetAll
     }
 
