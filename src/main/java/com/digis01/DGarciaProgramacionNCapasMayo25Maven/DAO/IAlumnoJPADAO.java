@@ -6,4 +6,6 @@ import com.digis01.DGarciaProgramacionNCapasMayo25Maven.ML.Result;
 public interface IAlumnoJPADAO {
     
     Result Add(AlumnoDireccion alumnoDireccion);
+    
+    Result GetAll();
 }

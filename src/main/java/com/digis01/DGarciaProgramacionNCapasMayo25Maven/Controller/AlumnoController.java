@@ -64,7 +64,7 @@ public class AlumnoController {
     @GetMapping
     public String Index(Model model) {
 
-        Result result = alumnoDAOImplementation.GetAll();
+        Result result = alumnoJPADAOImplementation.GetAll();
         model.addAttribute("alumnoBusqueda", new Alumno());
         if (result.correct) {
             model.addAttribute("alumnosDireccion", result.objects);
@@ -232,7 +232,8 @@ public class AlumnoController {
 
         List<AlumnoDireccion> alumnosDireccion = new ArrayList<>();
 
-        try (InputStream inputStream = archivo.getInputStream(); BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));) {
+        try (InputStream inputStream = archivo.getInputStream(); 
+                BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));) {
 
             bufferedReader.readLine();
             String linea = "";
