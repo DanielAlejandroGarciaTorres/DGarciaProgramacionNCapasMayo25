@@ -170,6 +170,19 @@ public class AlumnoController {
         return "algo"; // redireccionen a la vista de GetAll
     }
 
+    //ruta/delete/direccion?idDireccion=1
+    @GetMapping("delete/direccion")
+    public String DeleteDireccioByIdDireccion(@RequestParam int idDireccion){
+        Result result  = alumnoJPADAOImplementation.DeleteDireccionByIdDireccion(idDireccion);
+        
+        if (result.correct) {
+            // model.addAttribute("eliminación", "Se elimino de forma satisfactoria");
+        } else {
+            // model.addAttribute("elimincación", result.errorMessage);
+        }
+        return "algo";
+    }
+    
     @GetMapping("cargamasiva")
     public String CargaMasiva() {
         return "CargaMasiva";

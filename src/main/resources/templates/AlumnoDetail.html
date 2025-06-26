@@ -40,7 +40,7 @@
                                         <td th:text="|${direccion.Calle}, ${direccion.NumeroExterior}, ${direccion.NumeroInterior}|"></td>
                                         <td>
                                             <a class="btn btn-warning btn-sm" th:href="@{/alumno/formeditable?IdAlumno=}+${alumnoDireccion.Alumno.IdAlumno}+'&IdDireccion='+${direccion.IdDireccion}">Editar</a>
-                                            <a class="btn btn-danger btn-sm">Eliminar</a>
+                                            <a class="btn btn-danger btn-sm" th:href="|@{/alumno/delete/direccion?idDireccion=}${direccion.IdDireccion}|">Eliminar</a>
                                         </td>
                                     </tr>
                                 </tbody>

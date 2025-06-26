@@ -8,4 +8,6 @@ public interface IAlumnoJPADAO {
     Result Add(AlumnoDireccion alumnoDireccion);
     
     Result GetAll();
+    
+    Result DeleteDireccionByIdDireccion(int idDireccion);
 }

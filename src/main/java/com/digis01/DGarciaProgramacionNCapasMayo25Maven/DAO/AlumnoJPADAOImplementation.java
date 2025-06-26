@@ -56,7 +56,7 @@ public class AlumnoJPADAOImplementation implements IAlumnoJPADAO {
     public Result GetAll() {
         Result result = new Result();
         result.objects = new ArrayList<>();
-        
+
         try {
             TypedQuery<Alumno> alumnosQuery = entityManger.createQuery("FROM Alumno ORDER BY IdAlumno ASC", Alumno.class);
             List<Alumno> alumnos = alumnosQuery.getResultList();
@@ -91,13 +91,33 @@ public class AlumnoJPADAOImplementation implements IAlumnoJPADAO {
 
             }
             result.correct = true;
-            
+
         } catch (Exception ex) {
             result.correct = false;
             result.errorMessage = ex.getLocalizedMessage();
             result.ex = ex;
         }
 
+        return result;
+    }
+
+    @Transactional
+    @Override
+    public Result DeleteDireccionByIdDireccion(int idDireccion) {
+
+        Result result = new Result();
+
+        try {
+            // FROM Direccion WHERE IdDireccion = 1, DireccionJPA.CLASS
+            Direccion direccionJPA = entityManger.find(Direccion.class, idDireccion);
+            entityManger.remove(direccionJPA);
+            
+            result.correct = true;
+        } catch (Exception ex) {
+            result.correct = false;
+            result.errorMessage = ex.getLocalizedMessage();
+            result.ex = ex;
+        }
         return result;
     }
 
