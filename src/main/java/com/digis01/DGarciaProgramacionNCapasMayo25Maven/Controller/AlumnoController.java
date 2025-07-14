@@ -165,7 +165,7 @@ public class AlumnoController {
  
  
 //        Result result = alumnoDAOImplementation.Add(alumnoDireccion);
-        Result result = alumnoJPADAOImplementation.Add(alumnoDireccion);
+        //Result result = alumnoJPADAOImplementation.Add(alumnoDireccion);
         
         return "algo"; // redireccionen a la vista de GetAll
     }

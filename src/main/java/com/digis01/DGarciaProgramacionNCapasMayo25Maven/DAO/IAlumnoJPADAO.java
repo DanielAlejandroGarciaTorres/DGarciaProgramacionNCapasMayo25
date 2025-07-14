@@ -1,6 +1,6 @@
 package com.digis01.DGarciaProgramacionNCapasMayo25Maven.DAO;
 
-import com.digis01.DGarciaProgramacionNCapasMayo25Maven.ML.AlumnoDireccion;
+import com.digis01.DGarciaProgramacionNCapasMayo25Maven.JPA.AlumnoDireccion;
 import com.digis01.DGarciaProgramacionNCapasMayo25Maven.ML.Result;
 
 public interface IAlumnoJPADAO {

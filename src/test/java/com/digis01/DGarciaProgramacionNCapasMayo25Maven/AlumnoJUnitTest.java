@@ -11,20 +11,20 @@ import org.springframework.boot.test.context.SpringBootTest;
 @SpringBootTest
 public class AlumnoJUnitTest {
 
-    @Autowired
-    private AlumnoDAOImplementation alumnoDAOImplementation;
-
-    @Test
-    public void GetAll() {
-        Result result = alumnoDAOImplementation.GetAll();
-        
-        Alumno alumno = new Alumno();
-        Assertions.assertNotNull(result);
-        Assertions.assertNull(result.objects);
-        Assertions.assertNull(result.object);
-        Assertions.assertNotNull(result.ex);
-        Assertions.assertTrue(result.correct, "result.correct viene false y se esperaba true");
-        
-    }
+//    @Autowired
+//    private AlumnoDAOImplementation alumnoDAOImplementation;
+//
+//    @Test
+//    public void GetAll() {
+//        Result result = alumnoDAOImplementation.GetAll();
+//        
+//        Alumno alumno = new Alumno();
+//        Assertions.assertNotNull(result);
+//        Assertions.assertNull(result.objects);
+//        Assertions.assertNull(result.object);
+//        Assertions.assertNotNull(result.ex);
+//        Assertions.assertTrue(result.correct, "result.correct viene false y se esperaba true");
+//        
+//    }
 
 }

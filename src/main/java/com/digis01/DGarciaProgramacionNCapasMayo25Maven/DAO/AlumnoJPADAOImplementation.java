@@ -3,7 +3,7 @@ package com.digis01.DGarciaProgramacionNCapasMayo25Maven.DAO;
 import com.digis01.DGarciaProgramacionNCapasMayo25Maven.JPA.Alumno;
 import com.digis01.DGarciaProgramacionNCapasMayo25Maven.JPA.Direccion;
 import com.digis01.DGarciaProgramacionNCapasMayo25Maven.JPA.Semestre;
-import com.digis01.DGarciaProgramacionNCapasMayo25Maven.ML.AlumnoDireccion;
+import com.digis01.DGarciaProgramacionNCapasMayo25Maven.JPA.AlumnoDireccion;
 import com.digis01.DGarciaProgramacionNCapasMayo25Maven.ML.Result;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.TypedQuery;
@@ -63,7 +63,7 @@ public class AlumnoJPADAOImplementation implements IAlumnoJPADAO {
 
             for (Alumno alumnoJPA : alumnos) {
                 AlumnoDireccion alumnoDireccion = new AlumnoDireccion();
-                alumnoDireccion.Alumno = new com.digis01.DGarciaProgramacionNCapasMayo25Maven.ML.Alumno();
+                alumnoDireccion.Alumno = new com.digis01.DGarciaProgramacionNCapasMayo25Maven.JPA.Alumno();
                 alumnoDireccion.Alumno.setIdAlumno(alumnoJPA.getIdAlumno());
                 alumnoDireccion.Alumno.setNombre(alumnoJPA.getNombre());
                 alumnoDireccion.Alumno.setApellidoPaterno(alumnoJPA.getApellidoPaterno());
@@ -83,7 +83,7 @@ public class AlumnoJPADAOImplementation implements IAlumnoJPADAO {
                         direccion.setNumeroExterior(direccionJPA.getNumeroExterior());
                         direccion.setNumeroInterior(direccionJPA.getNumeroInterior());
 
-                        alumnoDireccion.Direcciones.add(direccion);
+                        //alumnoDireccion.Direcciones.add(direccion);
                     }
                 }
 
